@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Claudio Vásquez — Consultoría B2B · IA aplicada" },
-      { name: "description", content: "Encuentra y elimina la fricción que frena tu venta B2B. Diagnóstico, intervenciones de alcance fijo y automatización con IA aplicada donde mueve revenue." },
+      { title: "Diagnóstico Comercial con IA — Claudio Vásquez" },
+      { name: "description", content: "Haz preguntas sobre mis servicios y recibe respuestas fundamentadas por una base de conocimiento real, sin información inventada." },
       { name: "author", content: "Claudio Vásquez" },
-      { property: "og:title", content: "Claudio Vásquez — Consultoría B2B · IA aplicada" },
-      { property: "og:description", content: "Diagnóstico basado en evidencia, intervenciones de alcance fijo y automatización con IA aplicada solo donde mueve revenue." },
+      { property: "og:title", content: "Diagnóstico Comercial con IA — Claudio Vásquez" },
+      { property: "og:description", content: "Haz preguntas sobre mis servicios y recibe respuestas fundamentadas por una base de conocimiento real, sin información inventada." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Diagnóstico Comercial con IA — Claudio Vásquez" },
+      { name: "twitter:description", content: "Haz preguntas sobre mis servicios y recibe respuestas fundamentadas por una base de conocimiento real, sin información inventada." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57384ff8-6e85-436d-a8bb-b6125ea7b769/id-preview-e2cb3a92--c0d73803-b244-45dc-9ad7-cb80243685b2.lovable.app-1783904282280.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/57384ff8-6e85-436d-a8bb-b6125ea7b769/id-preview-e2cb3a92--c0d73803-b244-45dc-9ad7-cb80243685b2.lovable.app-1783904282280.png" },
     ],
     links: [
       {
