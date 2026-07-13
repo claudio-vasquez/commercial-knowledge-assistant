@@ -1,8 +1,9 @@
 import { useCallback, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { MessageList } from "./MessageList";
 import { SuggestedQuestions } from "./SuggestedQuestions";
 import { Composer } from "./Composer";
-import { simulateReply } from "./suggestions";
+import { ask } from "@/lib/ask.functions";
 import type { ChatMessage } from "./types";
 
 function createId() {
@@ -14,6 +15,7 @@ export function ChatWindow() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const askFn = useServerFn(ask);
 
   const sendMessage = useCallback(
     async (raw: string) => {
@@ -27,10 +29,20 @@ export function ChatWindow() {
       setIsLoading(true);
 
       try {
-        const reply = await simulateReply(text);
+        const history = [...messages, userMessage]
+          .slice(-4)
+          .map((m) => ({ role: m.role, content: m.content }));
+        const reply = await askFn({
+          data: { question: text, history },
+        });
         setMessages((prev) => [
           ...prev,
-          { id: createId(), role: "assistant", content: reply },
+          {
+            id: createId(),
+            role: "assistant",
+            content: reply.answer,
+            sources: reply.sources,
+          },
         ]);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error inesperado.");
@@ -38,7 +50,7 @@ export function ChatWindow() {
         setIsLoading(false);
       }
     },
-    [isLoading],
+    [isLoading, messages, askFn],
   );
 
   return (

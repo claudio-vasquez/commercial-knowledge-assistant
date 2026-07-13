@@ -48,16 +48,24 @@ export function MessageList({ messages, isLoading, error }: Props) {
 
 function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
+  const hasSources = !isUser && !!message.sources && message.sources.length > 0;
   return (
     <div className={isUser ? "flex justify-end" : "flex justify-start"}>
-      <div
-        className={
-          isUser
-            ? "max-w-[85%] rounded-2xl bg-foreground px-4 py-2 text-sm text-background"
-            : "max-w-[85%] rounded-2xl bg-muted px-4 py-2 text-sm text-foreground"
-        }
-      >
-        {message.content}
+      <div className="flex max-w-[85%] flex-col gap-1">
+        <div
+          className={
+            isUser
+              ? "rounded-2xl bg-foreground px-4 py-2 text-sm text-background"
+              : "rounded-2xl bg-muted px-4 py-2 text-sm text-foreground whitespace-pre-wrap"
+          }
+        >
+          {message.content}
+        </div>
+        {hasSources && (
+          <p className="px-1 text-[11px] text-muted-foreground">
+            Fuentes: {message.sources!.join(", ")}
+          </p>
+        )}
       </div>
     </div>
   );
