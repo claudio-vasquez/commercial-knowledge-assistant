@@ -101,9 +101,10 @@ export const ask = createServerFn({ method: "POST" })
       return { answer: FALLBACK, sources: [] as string[] };
     }
 
+    const history = data.history ?? [];
     const messages = [
       { role: "system", content: SYSTEM_PROMPT },
-      ...data.history.map((t) => ({ role: t.role, content: t.content })),
+      ...history.map((t) => ({ role: t.role, content: t.content })),
       { role: "user", content: data.question },
     ];
 
