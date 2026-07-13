@@ -1,0 +1,354 @@
+{
+  "meta": {
+    "business": "Claudio Vásquez — Servicios (claudiovasquez.com)",
+    "version": "1.0",
+    "scope_statement": "Respondo sobre los servicios de Claudio Vásquez; no tengo información fuera de eso.",
+    "cta": {
+      "label": "Agenda un Diagnóstico Express",
+      "target": "mailto:CONTACT_EMAIL?subject=Diagnostico%20Express"
+    },
+    "suggested_ids": [
+      "services-escalera-resumen",
+      "services-diagnostico-express",
+      "pricing-diagnostico",
+      "faq-para-quien-es",
+      "faq-por-que-diagnostico-primero",
+      "contact-agendar-diagnostico"
+    ],
+    "fallback_no_se": "Esa información no está en mi base de conocimiento: solo respondo sobre los servicios de Claudio Vásquez. Si tu duda es sobre tu caso particular, el mejor siguiente paso es agendar un Diagnóstico Express escribiendo a CONTACT_EMAIL con ese asunto."
+  },
+  "entries": [
+    {
+      "id": "identity-quien-es-claudio",
+      "category": "identity",
+      "question_variants": [
+        "¿Quién es Claudio Vásquez?",
+        "¿Quién está detrás de este servicio?"
+      ],
+      "answer": "Claudio Vásquez es un profesional senior de ventas B2B con más de 8 años de experiencia full-cycle en SaaS, cloud, EdTech, HR Tech, FinTech y movilidad, en empresas como Fusiona (AWS Partner), Nubox, Platzi, Cabify, Rappi y Time Jobs. A eso suma una metodología propia de razonamiento comercial y capacidad técnica en automatización e IA aplicada, construida sobre proyectos propios y en profundización activa.",
+      "source": "Oferta v1.0 FINAL §1"
+    },
+    {
+      "id": "identity-que-hace",
+      "category": "identity",
+      "question_variants": [
+        "¿Qué haces?",
+        "¿En qué consiste tu trabajo?",
+        "¿Qué ofrece Claudio?"
+      ],
+      "answer": "Claudio ayuda a empresas B2B de Chile y LATAM a encontrar y eliminar la fricción que frena su venta: diagnóstico basado en evidencia, intervenciones de alcance fijo, y automatización con IA aplicada solo donde mueve revenue.",
+      "source": "Oferta v1.0 FINAL §1"
+    },
+    {
+      "id": "identity-marca-personal",
+      "category": "identity",
+      "question_variants": [
+        "¿Es una agencia o consultora?",
+        "¿Trabajo directamente con Claudio?"
+      ],
+      "answer": "No es una agencia: es una práctica personal bajo su propio nombre. Trabajas directamente con Claudio en cada etapa.",
+      "source": "Oferta v1.0 FINAL §1"
+    },
+    {
+      "id": "services-escalera-resumen",
+      "category": "services",
+      "question_variants": [
+        "¿Qué servicios ofreces?",
+        "¿Cómo funciona tu servicio?"
+      ],
+      "answer": "La oferta funciona como una escalera de tres escalones secuenciales: primero un Diagnóstico Express de Fricción Comercial, luego un Plan de Intervención, y finalmente la Intervención Ejecutada. Cada paso filtra y prepara el siguiente; nada se vende de catálogo.",
+      "source": "Oferta v1.0 FINAL §3"
+    },
+    {
+      "id": "services-diagnostico-express",
+      "category": "services",
+      "question_variants": [
+        "¿Qué es el Diagnóstico Express?",
+        "¿Qué incluye el diagnóstico?"
+      ],
+      "answer": "Es una sesión de trabajo de 45 a 60 minutos sobre tu proceso comercial real —pipeline, prospección, propuestas, CRM— más un mini-informe con 2 a 3 hipótesis de fricción priorizadas, qué dato confirmaría cada una y una recomendación de siguiente paso. Es un entregable real, no una reunión de ventas disfrazada.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 1"
+    },
+    {
+      "id": "services-plan-intervencion",
+      "category": "services",
+      "question_variants": [
+        "¿Qué es el Plan de Intervención?"
+      ],
+      "answer": "Es el segundo escalón: a partir del diagnóstico, recibes un documento accionable con 2 a 3 intervenciones concretas —qué, por qué, cómo, esfuerzo e impacto esperado— priorizadas para ejecutarse contigo o sin Claudio.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 2"
+    },
+    {
+      "id": "services-intervencion-ejecutada",
+      "category": "services",
+      "question_variants": [
+        "¿Qué es la Intervención Ejecutada?",
+        "¿Qué tipo de intervenciones haces?"
+      ],
+      "answer": "Es la ejecución de una fricción específica con alcance fijo, entregable cerrado y precio fixed. El menú actual: optimización de propuestas comerciales, secuencias y cadencias outbound, contenido con lógica de conversión, diseño e higiene de procesos comerciales en CRM, y automatizaciones puntuales con IA.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 3"
+    },
+    {
+      "id": "services-automatizaciones-ia",
+      "category": "services",
+      "question_variants": [
+        "¿Haces automatizaciones con IA?",
+        "¿Puedes implementar IA en mi equipo comercial?"
+      ],
+      "answer": "Sí, como parte del tercer escalón: automatizaciones puntuales con alcance acotado y entregable cerrado, como asistentes de conocimiento comercial, research y enriquecimiento de prospectos, y calificación asistida.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 3(e)"
+    },
+    {
+      "id": "services-teardowns",
+      "category": "services",
+      "question_variants": [
+        "¿Qué son los GTM Teardowns?"
+      ],
+      "answer": "Son análisis públicos, en inglés, de cómo empresas SaaS construyen sus motores de prospección: la misma metodología del diagnóstico aplicada a casos abiertos. Son contenido gratuito de autoridad, no un servicio, y actualmente están en pausa.",
+      "source": "Oferta v1.0 FINAL §3, Capa de autoridad"
+    },
+    {
+      "id": "pricing-diagnostico",
+      "category": "pricing",
+      "question_variants": [
+        "¿Cuánto cuesta el Diagnóstico Express?",
+        "¿El diagnóstico es gratis?"
+      ],
+      "answer": "Es gratuito para los primeros 3 casos, con un intercambio explícito: acceso a contexto y datos, un caso anonimizado y un testimonial. Después tiene un valor de UF 5 a 10, según el tamaño y la complejidad de la empresa.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 1"
+    },
+    {
+      "id": "pricing-plan-intervencion",
+      "category": "pricing",
+      "question_variants": [
+        "¿Cuánto cuesta el Plan de Intervención?"
+      ],
+      "answer": "Entre CLP 150.000 y 300.000, según la profundidad del plan.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 2"
+    },
+    {
+      "id": "pricing-intervencion",
+      "category": "pricing",
+      "question_variants": [
+        "¿Cuánto cuesta una Intervención Ejecutada?"
+      ],
+      "answer": "Entre CLP 600.000 y 2.000.000 fijos por intervención, según el alcance. La cotización final se define después del diagnóstico, cuando la fricción está clara.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 3"
+    },
+    {
+      "id": "pricing-medios-pago",
+      "category": "pricing",
+      "question_variants": [
+        "¿Qué medios de pago aceptas?",
+        "¿Cómo se paga?"
+      ],
+      "answer": "En Chile: transferencia bancaria con boleta de honorarios. Para clientes fuera de Chile: transferencia internacional vía Wise, en dólares.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "pricing-esquema-pago",
+      "category": "pricing",
+      "question_variants": [
+        "¿Cómo se estructura el pago?",
+        "¿Hay que pagar por adelantado?"
+      ],
+      "answer": "El Plan de Intervención se paga 100% contra entrega. La Intervención Ejecutada se paga 50% al inicio y 50% contra entrega.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "process-como-empezar",
+      "category": "process",
+      "question_variants": [
+        "¿Cómo empiezo?",
+        "¿Cuál es el primer paso?"
+      ],
+      "answer": "El punto de partida es siempre el Diagnóstico Express: se agenda escribiendo un correo con el asunto 'Diagnóstico Express', y desde ahí se coordina la sesión.",
+      "source": "Oferta v1.0 FINAL §3 y §6"
+    },
+    {
+      "id": "process-tiempos-entrega",
+      "category": "process",
+      "question_variants": [
+        "¿Cuánto demoran las entregas?",
+        "¿Cuáles son los plazos?"
+      ],
+      "answer": "El mini-informe del diagnóstico llega dentro de 3 días hábiles después de la sesión; el Plan de Intervención toma de 3 a 5 días hábiles; y una Intervención Ejecutada dura típicamente de 2 a 4 semanas.",
+      "source": "Oferta v1.0 FINAL §3 y §6"
+    },
+    {
+      "id": "process-modalidad",
+      "category": "process",
+      "question_variants": [
+        "¿Trabajas presencial o remoto?"
+      ],
+      "answer": "El trabajo es 100% remoto, con sesiones por Google Meet. Solo para intervenciones ejecutadas, y cuando el caso lo amerita, existe opción presencial en Santiago.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "process-despues-del-diagnostico",
+      "category": "process",
+      "question_variants": [
+        "¿Qué pasa después del diagnóstico?",
+        "¿Estoy obligado a continuar?"
+      ],
+      "answer": "Recibes el mini-informe y decides con total libertad: puedes ejecutar las recomendaciones por tu cuenta o avanzar al Plan de Intervención. El diagnóstico no genera ninguna obligación de continuar.",
+      "source": "Oferta v1.0 FINAL §3"
+    },
+    {
+      "id": "requirements-que-necesito",
+      "category": "requirements",
+      "question_variants": [
+        "¿Qué necesito para el diagnóstico?",
+        "¿Qué información debo entregar?"
+      ],
+      "answer": "Dos cosas: una sesión con quien conoce el proceso comercial de tu empresa, y acceso razonable a datos, como un export del pipeline o CRM y ejemplos de propuestas y mensajes.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "requirements-nda",
+      "category": "requirements",
+      "question_variants": [
+        "¿Firmas NDA?",
+        "¿Puedo pedir confidencialidad?"
+      ],
+      "answer": "Sí: hay NDA disponible si tu empresa lo requiere.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "policies-garantia-honestidad",
+      "category": "policies",
+      "question_variants": [
+        "¿Qué pasa si no encuentras nada?",
+        "¿Y si no eres la persona indicada?"
+      ],
+      "answer": "Si el diagnóstico no encuentra una fricción accionable, o si Claudio no es la persona correcta para la intervención, se te dice explícitamente y se te recomienda una alternativa. Esa garantía de honestidad es parte del servicio.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "policies-revisiones",
+      "category": "policies",
+      "question_variants": [
+        "¿Los entregables incluyen revisiones?"
+      ],
+      "answer": "Sí: todo entregable incluye una ronda de ajustes.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "policies-horario",
+      "category": "policies",
+      "question_variants": [
+        "¿Cuál es tu horario de atención?",
+        "¿Cuándo respondes?"
+      ],
+      "answer": "Lunes a viernes, de 9:00 a 18:00, hora de Chile. Las consultas se responden dentro de 24 horas hábiles.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "limitations-que-no-hago",
+      "category": "limitations",
+      "question_variants": [
+        "¿Qué cosas no haces?",
+        "¿Haces desarrollo de software?"
+      ],
+      "answer": "Fuera del alcance actual: desarrollo de software a medida, scoring con machine learning, nurturing multicanal complejo, orquestación Clay o n8n a nivel producción, paid media, community management, diseño gráfico o UX, consultoría de IA genérica sin entregable, y chatbots como commodity.",
+      "source": "Oferta v1.0 FINAL §4"
+    },
+    {
+      "id": "limitations-diagnostico-no-es",
+      "category": "limitations",
+      "question_variants": [
+        "¿El diagnóstico incluye implementación?",
+        "¿Es una auditoría legal o contable?"
+      ],
+      "answer": "No: el diagnóstico no es una auditoría contable ni legal, no promete resultados de venta y no incluye implementación. La ejecución corresponde al tercer escalón.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "limitations-anti-icp",
+      "category": "limitations",
+      "question_variants": [
+        "¿Trabajas con B2C?",
+        "¿Sirve si solo quiero un chatbot?"
+      ],
+      "answer": "Este servicio no es para empresas B2C o de e-commerce puro, ni para quien busca un chatbot como fin en sí mismo, ejecución de marketing operativo, o procesos de compra enterprise que exigen un equipo consultor.",
+      "source": "Oferta v1.0 FINAL §2"
+    },
+    {
+      "id": "faq-para-quien-es",
+      "category": "faq",
+      "question_variants": [
+        "¿Para quién es este servicio?",
+        "¿A qué tipo de empresas ayudas?"
+      ],
+      "answer": "Para empresas B2B de Chile y LATAM de entre 5 y 100 personas —SaaS, servicios TI, agencias, partners cloud— donde el founder o líder comercial no tiene RevOps ni un equipo de growth dedicado.",
+      "source": "Oferta v1.0 FINAL §2"
+    },
+    {
+      "id": "faq-senales-de-calce",
+      "category": "faq",
+      "question_variants": [
+        "¿Cómo sé si necesito esto?",
+        "¿Cuándo hace sentido un diagnóstico?"
+      ],
+      "answer": "Las señales típicas: pipeline estancado o irregular, outbound improvisado o inexistente, propuestas que no cierran, un CRM sucio o decorativo, o interés en IA sin saber por dónde empezar.",
+      "source": "Oferta v1.0 FINAL §2"
+    },
+    {
+      "id": "faq-por-que-diagnostico-primero",
+      "category": "faq",
+      "question_variants": [
+        "¿Puedo contratar una intervención directamente?",
+        "¿Por qué el diagnóstico es primero?"
+      ],
+      "answer": "Porque nada se vende de catálogo: una intervención solo se activa cuando el diagnóstico demostró que esa fricción existe y que resolverla mueve revenue. Eso reduce tu riesgo en cada paso.",
+      "source": "Oferta v1.0 FINAL §3 y §9"
+    },
+    {
+      "id": "faq-empresas-fuera-chile",
+      "category": "faq",
+      "question_variants": [
+        "¿Trabajas con empresas fuera de Chile?"
+      ],
+      "answer": "Sí: Claudio trabaja con empresas de Chile y de toda LATAM.",
+      "source": "Oferta v1.0 FINAL §2"
+    },
+    {
+      "id": "faq-idiomas",
+      "category": "faq",
+      "question_variants": [
+        "¿En qué idiomas trabajas?"
+      ],
+      "answer": "Español nativo e inglés profesional.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "faq-este-asistente-es-demo",
+      "category": "faq",
+      "question_variants": [
+        "¿Este asistente lo hiciste tú?",
+        "¿Puedes hacer algo así para mi negocio?"
+      ],
+      "answer": "Sí: este asistente es un ejemplo real de las automatizaciones con IA del tercer escalón. Si quieres algo así respondiendo por tu negocio, el camino parte por un Diagnóstico Express.",
+      "source": "Oferta v1.0 FINAL §3, Escalón 3(e)"
+    },
+    {
+      "id": "contact-agendar-diagnostico",
+      "category": "contact",
+      "question_variants": [
+        "¿Cómo agendo un diagnóstico?",
+        "¿Cómo te contacto?"
+      ],
+      "answer": "Escribe un correo a CONTACT_EMAIL con el asunto 'Diagnóstico Express' y desde ahí se coordina la sesión.",
+      "source": "Oferta v1.0 FINAL §6"
+    },
+    {
+      "id": "contact-sitio-web",
+      "category": "contact",
+      "question_variants": [
+        "¿Dónde puedo ver más información?"
+      ],
+      "answer": "En claudiovasquez.com: ahí está la oferta completa y este mismo asistente.",
+      "source": "Oferta v1.0 FINAL §1"
+    }
+  ]
+}
