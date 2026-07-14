@@ -77,7 +77,7 @@ export function LeadSection() {
     "mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-foreground/20";
 
   return (
-    <section id="contacto" className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+    <section id="hablemos" className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
       <div className="grid gap-12 md:grid-cols-2 md:gap-16">
         <div>
           <p className="text-sm text-muted-foreground">Contacto</p>
