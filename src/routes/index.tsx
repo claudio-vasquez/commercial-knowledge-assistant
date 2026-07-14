@@ -3,6 +3,7 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { Methodology } from "@/components/landing/Methodology";
 import { AssistantSection } from "@/components/landing/AssistantSection";
+import { LeadSection } from "@/components/landing/LeadSection";
 import { Footer } from "@/components/landing/Footer";
 
 export const Route = createFileRoute("/")({
@@ -17,6 +18,7 @@ function Index() {
         <Hero />
         <Methodology />
         <AssistantSection />
+        <LeadSection />
       </main>
       <Footer />
     </div>
