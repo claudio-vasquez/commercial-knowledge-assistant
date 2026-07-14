@@ -82,13 +82,13 @@ export function LeadSection() {
         <div>
           <p className="text-sm text-muted-foreground">Contacto</p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Conversemos sobre tu fricción comercial.
+            ¿Crees que algo está frenando tu proceso comercial?
           </h2>
           <p className="mt-4 max-w-md text-base text-muted-foreground">
-            Cuéntame brevemente qué está frenando tu proceso comercial. Revisaré tu caso y te responderé personalmente.
+            Explícame brevemente tu situación. Revisaré personalmente tu caso para identificar si existe una oportunidad clara de mejora.
           </p>
           <p className="mt-6 font-mono text-xs uppercase tracking-wider text-muted-foreground">
-            No es una suscripción ni una secuencia automática.
+            Sin newsletters. Sin secuencias automáticas. Leeré personalmente tu caso.
           </p>
         </div>
 
