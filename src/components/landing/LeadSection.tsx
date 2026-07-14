@@ -202,7 +202,7 @@ export function LeadSection() {
               disabled={status === "submitting"}
               className="inline-flex h-11 items-center justify-center rounded-md bg-foreground px-6 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {status === "submitting" ? "Enviando…" : "Enviar mensaje"}
+              {status === "submitting" ? "Enviando…" : "Enviar mi caso"}
             </button>
             {status === "success" && (
               <p className="text-sm text-foreground" role="status">
