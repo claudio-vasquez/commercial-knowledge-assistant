@@ -272,20 +272,21 @@ function PartialStep({
     "{evidence_answer_labels}",
     result.evidenceLabels.join(", ") || "las respuestas que entregaste",
   );
+  const patternTrace = useMemo(() => buildPatternTrace(answers), [answers]);
 
   return (
     <div>
       <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-        Lectura parcial · gratis
+        Lectura parcial
       </p>
       <h2 className="mt-3 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
         Lo que se dibuja con lo que declaraste
       </h2>
 
       {result.outcome === "sin_restriccion_clara" ? (
-        <PartialSinRestriccion trace={trace} />
+        <PartialSinRestriccion trace={patternTrace} />
       ) : result.outcome === "co_dominancia" ? (
-        <PartialCoDominancia dims={result.dominantDimensions} trace={trace} answers={answers} />
+        <PartialCoDominancia dims={result.dominantDimensions} trace={patternTrace} answers={answers} />
       ) : (
         <PartialDominante dim={result.dominantDimension!} trace={trace} answers={answers} />
       )}
@@ -307,10 +308,31 @@ function PartialStep({
           onClick={onContinue}
           className="inline-flex h-11 items-center rounded-md bg-foreground px-6 text-sm font-medium text-background transition-opacity hover:opacity-90"
         >
-          Quiero el informe completo
+          Ver mi informe completo
         </button>
       </div>
     </div>
+  );
+}
+
+function buildPatternTrace(answers: Answers): string {
+  const labels: string[] = [];
+  for (const q of MEASURED_QUESTIONS) {
+    const chosen = answers[q.id];
+    if (!chosen) continue;
+    const opt = findOption(q, chosen);
+    if (!opt) continue;
+    labels.push(`"${opt.label}"`);
+  }
+  if (labels.length === 0) {
+    return contract.content.templates.partial_result.trace_line.replace(
+      "{evidence_answer_labels}",
+      "las respuestas que entregaste",
+    );
+  }
+  return contract.content.templates.partial_result.trace_line.replace(
+    "{evidence_answer_labels}",
+    labels.join(", "),
   );
 }
 
