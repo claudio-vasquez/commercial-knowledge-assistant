@@ -34,28 +34,92 @@
   },
   "rules": {
     "dimensions": [
-      { "id": "d1_flujo", "code": "D1", "name_internal": "Flujo", "name_public": "Flujo", "sensor_ids": ["s1_origen", "s2_ritmo"], "meta_dimension": false },
-      { "id": "d2_conversion", "code": "D2", "name_internal": "Conversión", "name_public": "Conversión", "sensor_ids": ["s3_destino", "s4_siguiente_paso"], "meta_dimension": false },
-      { "id": "d3_consistencia", "code": "D3", "name_internal": "Consistencia", "name_public": "Consistencia", "sensor_ids": ["s5_dependencia", "s6_incorporacion"], "meta_dimension": false },
-      { "id": "d4_visibilidad", "code": "D4", "name_internal": "Visibilidad", "name_public": "Visibilidad", "sensor_ids": ["s7_confianza_dato", "s8_base_decision"], "meta_dimension": true }
+      {
+        "id": "d1_flujo",
+        "code": "D1",
+        "name_internal": "Flujo",
+        "name_public": "Flujo",
+        "sensor_ids": [
+          "s1_origen",
+          "s2_ritmo"
+        ],
+        "meta_dimension": false
+      },
+      {
+        "id": "d2_conversion",
+        "code": "D2",
+        "name_internal": "Conversión",
+        "name_public": "Conversión",
+        "sensor_ids": [
+          "s3_destino",
+          "s4_siguiente_paso"
+        ],
+        "meta_dimension": false
+      },
+      {
+        "id": "d3_consistencia",
+        "code": "D3",
+        "name_internal": "Consistencia",
+        "name_public": "Consistencia",
+        "sensor_ids": [
+          "s5_dependencia",
+          "s6_incorporacion"
+        ],
+        "meta_dimension": false
+      },
+      {
+        "id": "d4_visibilidad",
+        "code": "D4",
+        "name_internal": "Visibilidad",
+        "name_public": "Visibilidad",
+        "sensor_ids": [
+          "s7_confianza_dato",
+          "s8_base_decision"
+        ],
+        "meta_dimension": true
+      }
     ],
     "classifications": {
-      "friction": { "weight": 2, "description": "Señal fuerte del patrón de fricción de la dimensión." },
-      "weak_friction": { "weight": 1, "description": "Señal débil o ambigua del patrón; suma evidencia sin bastar por sí sola." },
-      "no_friction": { "weight": 0, "description": "Conducta sana respecto del patrón; baja la lectura de fricción." },
-      "unknown": { "weight": 0, "description": "Respuesta 'No lo sé': no puntúa la dimensión propia; alimenta D4 y reduce la confianza declarada.", "feeds_dimension": "d4_visibilidad", "feed_weight": 1, "confidence_effect": "increment_unknown_count" },
-      "context_only": { "weight": 0, "description": "No puntúa: enruta e interpreta (regla R5)." }
+      "friction": {
+        "weight": 2,
+        "description": "Señal fuerte del patrón de fricción de la dimensión."
+      },
+      "weak_friction": {
+        "weight": 1,
+        "description": "Señal débil o ambigua del patrón; suma evidencia sin bastar por sí sola."
+      },
+      "no_friction": {
+        "weight": 0,
+        "description": "Conducta sana respecto del patrón; baja la lectura de fricción."
+      },
+      "unknown": {
+        "weight": 0,
+        "description": "Respuesta 'No lo sé': no puntúa la dimensión propia; alimenta D4 y reduce la confianza declarada.",
+        "feeds_dimension": "d4_visibilidad",
+        "feed_weight": 1,
+        "confidence_effect": "increment_unknown_count"
+      },
+      "context_only": {
+        "weight": 0,
+        "description": "No puntúa: enruta e interpreta (regla R5)."
+      }
     },
     "scoring": {
       "method": "sum_of_option_weights_per_dimension",
       "direct_dimension_score": {
         "definition": "Suma de los pesos de los dos sensores directos de la dimensión.",
-        "range": [0, 4]
+        "range": [
+          0,
+          4
+        ]
       },
       "indirect_unknown_score": {
         "applies_to": "d4_visibilidad",
         "definition": "Suma de feed_weight por cada respuesta 'unknown' del chequeo. Evidencia indirecta: no se confunde con los dos sensores directos de D4.",
-        "range": [0, 8]
+        "range": [
+          0,
+          8
+        ]
       },
       "total_interpretation_score": {
         "definition": "direct_dimension_score + indirect_unknown_score (solo D4 recibe componente indirecta). Es el puntaje que consume la resolución de desenlaces.",
@@ -65,27 +129,56 @@
     },
     "id_policy": {
       "uniqueness": "per_namespace",
-      "namespaces": ["dimensions", "questions", "options", "patterns", "reactive_moments", "outcomes", "resolution_steps", "modifiers"],
+      "namespaces": [
+        "dimensions",
+        "questions",
+        "options",
+        "patterns",
+        "reactive_moments",
+        "outcomes",
+        "resolution_steps",
+        "modifiers"
+      ],
       "note": "Un mismo id puede existir en namespaces distintos (p. ej. 'co_dominancia' como outcome y como paso de resolución)."
     },
     "confidence": {
       "counted_over": "measured_questions_only",
       "thresholds": [
-        { "level": "alta", "min_unknown": 0, "max_unknown": 0 },
-        { "level": "media", "min_unknown": 1, "max_unknown": 2 },
-        { "level": "baja", "min_unknown": 3, "max_unknown": 8 }
+        {
+          "level": "alta",
+          "min_unknown": 0,
+          "max_unknown": 0
+        },
+        {
+          "level": "media",
+          "min_unknown": 1,
+          "max_unknown": 2
+        },
+        {
+          "level": "baja",
+          "min_unknown": 3,
+          "max_unknown": 8
+        }
       ],
       "modifiers": [
         {
           "id": "respondent_outside_sales",
-          "when": { "question_id": "c2_relacion_venta", "option_id": "c2_rol_otro" },
+          "when": {
+            "question_id": "c2_relacion_venta",
+            "option_id": "c2_rol_otro"
+          },
           "effect": "cap_confidence_at_media",
           "note_ref": "content.confidence.modifier_notes.respondent_outside_sales"
         }
       ]
     },
     "resolution": {
-      "priority_order": ["d4_visibilidad", "d3_consistencia", "d2_conversion", "d1_flujo"],
+      "priority_order": [
+        "d4_visibilidad",
+        "d3_consistencia",
+        "d2_conversion",
+        "d1_flujo"
+      ],
       "max_fronts": 2,
       "steps": [
         {
@@ -127,27 +220,61 @@
       "max_per_type": 1,
       "honesty_rule": "Nunca reaccionar sin trigger cumplido; jamás una reacción después de cada pregunta; las reacciones no simulan chat.",
       "triggers": [
-        { "moment_id": "r_post_context", "type": "post_context", "when": "after_question_answered", "question_id": "c2_relacion_venta" },
-        { "moment_id": "r_post_unknown", "type": "post_unknown", "when": "first_option_with_classification", "classification": "unknown" },
-        { "moment_id": "r_mid_pattern", "type": "mid_pattern", "when": "after_question_if_any_dimension_score_gte", "question_id": "s4_siguiente_paso", "value": 3 }
+        {
+          "moment_id": "r_post_context",
+          "type": "post_context",
+          "when": "after_question_answered",
+          "question_id": "c2_relacion_venta"
+        },
+        {
+          "moment_id": "r_post_unknown",
+          "type": "post_unknown",
+          "when": "first_option_with_classification",
+          "classification": "unknown"
+        },
+        {
+          "moment_id": "r_mid_pattern",
+          "type": "mid_pattern",
+          "when": "after_question_if_any_dimension_score_gte",
+          "question_id": "s4_siguiente_paso",
+          "value": 3
+        }
       ]
     },
     "partial_full_boundary": {
-      "partial_sections": ["pattern", "why_trace", "hypothesis", "micro_help"],
-      "full_adds_sections": ["first_moves", "postpone", "how_to_confirm", "confidence_declared", "limits", "single_next_step"],
+      "partial_sections": [
+        "pattern",
+        "why_trace",
+        "hypothesis",
+        "micro_help"
+      ],
+      "full_adds_sections": [
+        "first_moves",
+        "postpone",
+        "how_to_confirm",
+        "confidence_declared",
+        "limits",
+        "single_next_step"
+      ],
       "rule": "El parcial nunca esconde el diagnóstico; el completo nunca repite sin agregar."
     },
     "interpretation_modifiers": [
       {
         "id": "d3_stage_small_company",
-        "when": { "question_id": "c1_tamano", "option_id": "c1_lt_10" },
+        "when": {
+          "question_id": "c1_tamano",
+          "option_id": "c1_lt_10"
+        },
         "applies_to_dimension": "d3_consistencia",
         "effect": "prepend_variant",
         "variant_ref": "content.library.d3_consistencia.context_variants.d3_variant_etapa"
       },
       {
         "id": "outside_icp",
-        "when": { "question_id": "c1_tamano", "option_id": "c1_gt_100" },
+        "when": {
+          "question_id": "c1_tamano",
+          "option_id": "c1_gt_100"
+        },
         "applies_to_dimension": "all",
         "effect": "append_note",
         "note_ref": "content.notes.outside_icp"
@@ -167,10 +294,54 @@
         "code": "C1",
         "text": "¿De qué tamaño es tu empresa?",
         "options": [
-          { "id": "c1_lt_10", "label": "Menos de 10 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": ["empresa_pequena"] },
-          { "id": "c1_10_30", "label": "10 a 30 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
-          { "id": "c1_31_100", "label": "31 a 100 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
-          { "id": "c1_gt_100", "label": "Más de 100 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": ["fuera_icp"] }
+          {
+            "id": "c1_lt_10",
+            "label": "Menos de 10 personas.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "empresa_pequena"
+            ]
+          },
+          {
+            "id": "c1_10_30",
+            "label": "10 a 30 personas.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "none",
+            "signals": []
+          },
+          {
+            "id": "c1_31_100",
+            "label": "31 a 100 personas.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "none",
+            "signals": []
+          },
+          {
+            "id": "c1_gt_100",
+            "label": "Más de 100 personas.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "fuera_icp"
+            ]
+          }
         ]
       },
       {
@@ -178,10 +349,54 @@
         "code": "C2",
         "text": "¿Cuál es tu relación con la venta en la empresa?",
         "options": [
-          { "id": "c2_fundador_vende", "label": "Fundé la empresa y vendo.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": ["fundador_vendedor"] },
-          { "id": "c2_lidera_comercial", "label": "Lidero el área comercial.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
-          { "id": "c2_equipo_comercial", "label": "Trabajo en el área comercial.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
-          { "id": "c2_rol_otro", "label": "Tengo otro rol.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "modifier_respondent_outside_sales", "signals": ["respondente_fuera_de_ventas"] }
+          {
+            "id": "c2_fundador_vende",
+            "label": "Fundé la empresa y vendo.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "fundador_vendedor"
+            ]
+          },
+          {
+            "id": "c2_lidera_comercial",
+            "label": "Lidero el área comercial.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "none",
+            "signals": []
+          },
+          {
+            "id": "c2_equipo_comercial",
+            "label": "Trabajo en el área comercial.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "none",
+            "signals": []
+          },
+          {
+            "id": "c2_rol_otro",
+            "label": "Tengo otro rol.",
+            "classification": "context_only",
+            "dimension_effect": {
+              "target": null,
+              "via": "none"
+            },
+            "confidence_effect": "modifier_respondent_outside_sales",
+            "signals": [
+              "respondente_fuera_de_ventas"
+            ]
+          }
         ]
       }
     ],
@@ -193,11 +408,74 @@
         "pattern_id": "flujo_recolectado",
         "text": "Piensa en las últimas 10 conversaciones comerciales nuevas. ¿De dónde vino la mayoría?",
         "options": [
-          { "id": "s1_referidos_red", "label": "Referidos o contactos de nuestra red.", "classification": "friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["origen_no_repetible"] },
-          { "id": "s1_inbound", "label": "Llegaron por su cuenta.", "classification": "weak_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["inbound_ambiguo"], "rival_signals": ["posible_motor_reputacion"] },
-          { "id": "s1_iniciamos", "label": "Las iniciamos nosotros.", "classification": "no_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["generacion_activa"] },
-          { "id": "s1_mezcla", "label": "Fue una mezcla bastante pareja.", "classification": "no_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["origen_mixto"] },
-          { "id": "s1_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_origen"] }
+          {
+            "id": "s1_referidos_red",
+            "label": "Referidos o contactos de nuestra red.",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d1_flujo",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "origen_no_repetible"
+            ]
+          },
+          {
+            "id": "s1_inbound",
+            "label": "Llegaron por su cuenta.",
+            "classification": "weak_friction",
+            "dimension_effect": {
+              "target": "d1_flujo",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "inbound_ambiguo"
+            ],
+            "rival_signals": [
+              "posible_motor_reputacion"
+            ]
+          },
+          {
+            "id": "s1_iniciamos",
+            "label": "Las iniciamos nosotros.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d1_flujo",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "generacion_activa"
+            ]
+          },
+          {
+            "id": "s1_mezcla",
+            "label": "Fue una mezcla bastante pareja.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d1_flujo",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "origen_mixto"
+            ]
+          },
+          {
+            "id": "s1_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_origen"
+            ]
+          }
         ]
       },
       {
@@ -207,10 +485,62 @@
         "pattern_id": "flujo_recolectado",
         "text": "En los últimos tres meses, ¿salir a buscar clientes nuevos fue una actividad de todas las semanas?",
         "options": [
-          { "id": "s2_todas_semanas", "label": "Sí, todas o casi todas las semanas.", "classification": "no_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["ritmo_constante"] },
-          { "id": "s2_solo_cuando_baja", "label": "Solo cuando empieza a bajar el pipeline.", "classification": "friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["prospeccion_prociclica", "reconocimiento"] },
-          { "id": "s2_casi_no", "label": "Casi no se hizo.", "classification": "weak_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["generacion_ausente"], "rival_signals": ["posible_motor_reputacion"] },
-          { "id": "s2_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_ritmo"] }
+          {
+            "id": "s2_todas_semanas",
+            "label": "Sí, todas o casi todas las semanas.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d1_flujo",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "ritmo_constante"
+            ]
+          },
+          {
+            "id": "s2_solo_cuando_baja",
+            "label": "Solo cuando empieza a bajar el pipeline.",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d1_flujo",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "prospeccion_prociclica",
+              "reconocimiento"
+            ]
+          },
+          {
+            "id": "s2_casi_no",
+            "label": "Casi no se hizo.",
+            "classification": "weak_friction",
+            "dimension_effect": {
+              "target": "d1_flujo",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "generacion_ausente"
+            ],
+            "rival_signals": [
+              "posible_motor_reputacion"
+            ]
+          },
+          {
+            "id": "s2_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_ritmo"
+            ]
+          }
         ]
       },
       {
@@ -220,10 +550,62 @@
         "pattern_id": "desvanecimiento",
         "text": "De las últimas 10 conversaciones comerciales que no terminaron en venta, ¿qué pasó con la mayoría?",
         "options": [
-          { "id": "s3_nos_dijeron_no", "label": "Nos dijeron que no.", "classification": "no_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["noes_explicitos"], "rival_signals": ["posible_fuera_de_alcance_si_consistente"] },
-          { "id": "s3_dejaron_responder", "label": "Dejaron de responder después de una reunión o una propuesta (\"lo estamos viendo\").", "classification": "friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["desvanecimiento", "reconocimiento"] },
-          { "id": "s3_descartamos", "label": "Las descartamos nosotros.", "classification": "no_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["calificacion_activa"] },
-          { "id": "s3_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_destinos"] }
+          {
+            "id": "s3_nos_dijeron_no",
+            "label": "Nos dijeron que no.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d2_conversion",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "noes_explicitos"
+            ],
+            "rival_signals": [
+              "posible_fuera_de_alcance_si_consistente"
+            ]
+          },
+          {
+            "id": "s3_dejaron_responder",
+            "label": "Dejaron de responder después de una reunión o una propuesta (\"lo estamos viendo\").",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d2_conversion",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "desvanecimiento",
+              "reconocimiento"
+            ]
+          },
+          {
+            "id": "s3_descartamos",
+            "label": "Las descartamos nosotros.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d2_conversion",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "calificacion_activa"
+            ]
+          },
+          {
+            "id": "s3_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_destinos"
+            ]
+          }
         ]
       },
       {
@@ -233,10 +615,59 @@
         "pattern_id": "desvanecimiento",
         "text": "Cuando termina una conversación comercial importante, ¿queda definido un siguiente paso con fecha?",
         "options": [
-          { "id": "s4_casi_siempre", "label": "Casi siempre.", "classification": "no_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["avance_instalado"] },
-          { "id": "s4_a_veces", "label": "A veces.", "classification": "weak_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["avance_intermitente"] },
-          { "id": "s4_casi_nunca", "label": "Casi nunca; normalmente queda en \"sigamos en contacto\".", "classification": "friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["sin_siguiente_paso", "reconocimiento"] },
-          { "id": "s4_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_proceso"] }
+          {
+            "id": "s4_casi_siempre",
+            "label": "Casi siempre.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d2_conversion",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "avance_instalado"
+            ]
+          },
+          {
+            "id": "s4_a_veces",
+            "label": "A veces.",
+            "classification": "weak_friction",
+            "dimension_effect": {
+              "target": "d2_conversion",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "avance_intermitente"
+            ]
+          },
+          {
+            "id": "s4_casi_nunca",
+            "label": "Casi nunca; normalmente queda en \"sigamos en contacto\".",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d2_conversion",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "sin_siguiente_paso",
+              "reconocimiento"
+            ]
+          },
+          {
+            "id": "s4_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_proceso"
+            ]
+          }
         ]
       },
       {
@@ -246,10 +677,58 @@
         "pattern_id": "sistema_de_una_persona",
         "text": "Si la persona que más vende en la empresa dejara de vender durante un mes, ¿qué pasaría?",
         "options": [
-          { "id": "s5_proceso_seguiria", "label": "El proceso seguiría funcionando.", "classification": "no_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["proceso_independiente"] },
-          { "id": "s5_bajarian_seguiria", "label": "Las ventas bajarían, pero el proceso seguiría funcionando.", "classification": "weak_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["dependencia_parcial"] },
-          { "id": "s5_se_detendria", "label": "La mayor parte de las ventas se detendría.", "classification": "friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["dependencia_total"] },
-          { "id": "s5_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_dependencia"] }
+          {
+            "id": "s5_proceso_seguiria",
+            "label": "El proceso seguiría funcionando.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d3_consistencia",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "proceso_independiente"
+            ]
+          },
+          {
+            "id": "s5_bajarian_seguiria",
+            "label": "Las ventas bajarían, pero el proceso seguiría funcionando.",
+            "classification": "weak_friction",
+            "dimension_effect": {
+              "target": "d3_consistencia",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "dependencia_parcial"
+            ]
+          },
+          {
+            "id": "s5_se_detendria",
+            "label": "La mayor parte de las ventas se detendría.",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d3_consistencia",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "dependencia_total"
+            ]
+          },
+          {
+            "id": "s5_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_dependencia"
+            ]
+          }
         ]
       },
       {
@@ -259,10 +738,58 @@
         "pattern_id": "sistema_de_una_persona",
         "text": "Si mañana se incorporara una persona nueva al equipo comercial, ¿de qué dependería principalmente que empezara a vender?",
         "options": [
-          { "id": "s6_proceso_claro", "label": "Existe un proceso claro que puede seguir.", "classification": "no_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["camino_externalizado"] },
-          { "id": "s6_depende_acompanante", "label": "Depende mucho de quién la acompañe durante las primeras semanas.", "classification": "weak_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["conocimiento_tacito"] },
-          { "id": "s6_cada_uno_forma", "label": "Cada persona encuentra su propia forma de vender.", "classification": "friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["venta_artesanal"] },
-          { "id": "s6_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_camino"] }
+          {
+            "id": "s6_proceso_claro",
+            "label": "Existe un proceso claro que puede seguir.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d3_consistencia",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "camino_externalizado"
+            ]
+          },
+          {
+            "id": "s6_depende_acompanante",
+            "label": "Depende mucho de quién la acompañe durante las primeras semanas.",
+            "classification": "weak_friction",
+            "dimension_effect": {
+              "target": "d3_consistencia",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "conocimiento_tacito"
+            ]
+          },
+          {
+            "id": "s6_cada_uno_forma",
+            "label": "Cada persona encuentra su propia forma de vender.",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d3_consistencia",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "venta_artesanal"
+            ]
+          },
+          {
+            "id": "s6_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_camino"
+            ]
+          }
         ]
       },
       {
@@ -272,10 +799,59 @@
         "pattern_id": "gobernar_sin_tablero",
         "text": "Si hoy alguien te preguntara cuántas oportunidades comerciales activas tiene la empresa, ¿qué tan confiado te sentirías con tu respuesta?",
         "options": [
-          { "id": "s7_precision", "label": "Lo sabemos con bastante precisión.", "classification": "no_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["observabilidad_alta"] },
-          { "id": "s7_registrado_no_confiable", "label": "Está registrado, pero no confiaríamos demasiado en el dato.", "classification": "friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["registro_decorativo", "reconocimiento"] },
-          { "id": "s7_revisar_antes", "label": "Tendríamos que revisar varias fuentes o preguntarle a alguien antes de responder.", "classification": "weak_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["sin_gobierno_semanal"] },
-          { "id": "s7_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_pipeline"] }
+          {
+            "id": "s7_precision",
+            "label": "Lo sabemos con bastante precisión.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "observabilidad_alta"
+            ]
+          },
+          {
+            "id": "s7_registrado_no_confiable",
+            "label": "Está registrado, pero no confiaríamos demasiado en el dato.",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "registro_decorativo",
+              "reconocimiento"
+            ]
+          },
+          {
+            "id": "s7_revisar_antes",
+            "label": "Tendríamos que revisar varias fuentes o preguntarle a alguien antes de responder.",
+            "classification": "weak_friction",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "sin_gobierno_semanal"
+            ]
+          },
+          {
+            "id": "s7_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_pipeline"
+            ]
+          }
         ]
       },
       {
@@ -285,10 +861,58 @@
         "pattern_id": "gobernar_sin_tablero",
         "text": "Piensa en la última decisión importante que tomaron para mejorar las ventas. ¿En qué se basó principalmente?",
         "options": [
-          { "id": "s8_informacion_disponible", "label": "En información que ya teníamos disponible.", "classification": "no_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["decision_con_datos"] },
-          { "id": "s8_conversaciones_experiencia", "label": "En conversaciones y experiencia del equipo.", "classification": "weak_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["decision_por_experiencia"] },
-          { "id": "s8_intuicion_urgencia", "label": "Principalmente en intuición o urgencia.", "classification": "friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["sensacion_termica"] },
-          { "id": "s8_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_gobierno"] }
+          {
+            "id": "s8_informacion_disponible",
+            "label": "En información que ya teníamos disponible.",
+            "classification": "no_friction",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "decision_con_datos"
+            ]
+          },
+          {
+            "id": "s8_conversaciones_experiencia",
+            "label": "En conversaciones y experiencia del equipo.",
+            "classification": "weak_friction",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "decision_por_experiencia"
+            ]
+          },
+          {
+            "id": "s8_intuicion_urgencia",
+            "label": "Principalmente en intuición o urgencia.",
+            "classification": "friction",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "classification"
+            },
+            "confidence_effect": "none",
+            "signals": [
+              "sensacion_termica"
+            ]
+          },
+          {
+            "id": "s8_ns",
+            "label": "No lo sé.",
+            "classification": "unknown",
+            "dimension_effect": {
+              "target": "d4_visibilidad",
+              "via": "unknown_feed"
+            },
+            "confidence_effect": "increment_unknown_count",
+            "signals": [
+              "sin_visibilidad_gobierno"
+            ]
+          }
         ]
       }
     ],
@@ -301,7 +925,7 @@
       {
         "id": "r_post_unknown",
         "type": "post_unknown",
-        "text": "Ese \"no lo sé\" vale más de lo que parece: le pasa a la mayoría de las empresas de este tamaño, y ya nos está diciendo algo sobre qué tan visible es tu motor comercial. Sigamos."
+        "text": "Con tus respuestas ya se está formando una hipótesis — una bastante frecuente, por lo demás. Las preguntas que quedan existen justamente para confirmarla o descartarla."
       },
       {
         "id": "r_mid_pattern",
@@ -458,17 +1082,35 @@
     },
     "templates": {
       "partial_result": {
-        "section_order": ["pattern", "why_trace", "hypothesis", "micro_help"],
+        "section_order": [
+          "pattern",
+          "why_trace",
+          "hypothesis",
+          "micro_help"
+        ],
         "trace_line": "Esta lectura aparece por tus respuestas: {evidence_answer_labels}.",
         "rule": "El diagnóstico nunca se esconde; la micro-ayuda se entrega antes de pedir nada."
       },
       "full_report": {
-        "section_order": ["lectura_priorizada", "por_que", "primer_paso", "siguientes_jugadas", "que_posponer", "como_confirmar", "confianza_declarada", "limites", "siguiente_paso_unico"],
+        "section_order": [
+          "lectura_priorizada",
+          "por_que",
+          "primer_paso",
+          "siguientes_jugadas",
+          "que_posponer",
+          "como_confirmar",
+          "confianza_declarada",
+          "limites",
+          "siguiente_paso_unico"
+        ],
         "rule": "Esqueleto invariante para los tres desenlaces; solo varía la rama de biblioteca que lo llena."
       },
       "gate": {
-        "ask_fields": ["name", "email"],
-        "freedom_text": "Lo que ya leíste es tuyo, con o sin correo. Si quieres el informe completo — la secuencia de pasos, qué posponer y cómo confirmar cada hipótesis — déjame tu nombre y correo y lo ves al tiro, acá mismo.",
+        "ask_fields": [
+          "name",
+          "email"
+        ],
+        "freedom_text": "Lo que ya leíste es tuyo, con o sin correo. El informe completo ya está construido con tus respuestas: incluye el primer paso concreto, las siguientes jugadas, qué conviene posponer y cómo confirmar o descartar la hipótesis. Si te sirve verlo, déjame tu nombre y correo y lo abres acá mismo.",
         "consent_ref": "meta.consent_purpose",
         "minimum_ask_rule": "Solo nombre y correo; ningún campo adicional en el momento del intercambio."
       }
@@ -489,8 +1131,20 @@
     "lead_source_value": "diagnostic",
     "payload_schema": {
       "version": "meta.version",
-      "context_answers": { "c1_tamano": "option_id", "c2_relacion_venta": "option_id" },
-      "measured_answers": { "s1_origen": "option_id", "s2_ritmo": "option_id", "s3_destino": "option_id", "s4_siguiente_paso": "option_id", "s5_dependencia": "option_id", "s6_incorporacion": "option_id", "s7_confianza_dato": "option_id", "s8_base_decision": "option_id" },
+      "context_answers": {
+        "c1_tamano": "option_id",
+        "c2_relacion_venta": "option_id"
+      },
+      "measured_answers": {
+        "s1_origen": "option_id",
+        "s2_ritmo": "option_id",
+        "s3_destino": "option_id",
+        "s4_siguiente_paso": "option_id",
+        "s5_dependencia": "option_id",
+        "s6_incorporacion": "option_id",
+        "s7_confianza_dato": "option_id",
+        "s8_base_decision": "option_id"
+      },
       "outcome": "outcome_id",
       "dominant_dimension": "dimension_id_or_null",
       "dominant_dimensions": "array_of_dimension_ids_when_co_dominance",
