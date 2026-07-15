@@ -10,13 +10,13 @@ export function Navbar() {
           {NAV.top.label}
         </Link>
         <div className="hidden items-center gap-8 md:flex">
-          <a href={`/${NAV.metodologia.href}`} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <a href={NAV.metodologia.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             {NAV.metodologia.label}
           </a>
-          <a href={`/${NAV.asistente.href}`} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <a href={NAV.asistente.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             {NAV.asistente.label}
           </a>
-          <a href={`/${NAV.hablemos.href}`} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <a href={NAV.hablemos.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             {NAV.hablemos.label}
           </a>
         </div>
