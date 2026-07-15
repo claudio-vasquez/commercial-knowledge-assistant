@@ -5,7 +5,7 @@
     "scope_statement": "Respondo sobre los servicios de Claudio Vásquez; no tengo información fuera de eso.",
     "cta": {
       "label": "Agenda un Diagnóstico Express",
-      "target": "mailto:CONTACT_EMAIL?subject=Diagnostico%20Express"
+      "target": "mailto:vasquezfariasclaudio@gmail.com?subject=Diagnostico%20Express"
     },
     "suggested_ids": [
       "services-escalera-resumen",
@@ -15,7 +15,7 @@
       "faq-por-que-diagnostico-primero",
       "contact-agendar-diagnostico"
     ],
-    "fallback_no_se": "Esa información no está en mi base de conocimiento: solo respondo sobre los servicios de Claudio Vásquez. Si tu duda es sobre tu caso particular, el mejor siguiente paso es agendar un Diagnóstico Express escribiendo a CONTACT_EMAIL con ese asunto."
+    "fallback_no_se": "Esa información no está en mi base de conocimiento: solo respondo sobre los servicios de Claudio Vásquez. Si tu duda es sobre tu caso particular, el mejor siguiente paso es agendar un Diagnóstico Express escribiendo a vasquezfariasclaudio@gmail.com con ese asunto."
   },
   "entries": [
     {
@@ -338,7 +338,7 @@
         "¿Cómo agendo un diagnóstico?",
         "¿Cómo te contacto?"
       ],
-      "answer": "Escribe un correo a CONTACT_EMAIL con el asunto 'Diagnóstico Express' y desde ahí se coordina la sesión.",
+      "answer": "Escribe un correo a vasquezfariasclaudio@gmail.com con el asunto 'Diagnóstico Express' y desde ahí se coordina la sesión.",
       "source": "Oferta v1.0 FINAL §6"
     },
     {
