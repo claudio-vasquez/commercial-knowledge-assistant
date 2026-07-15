@@ -1,0 +1,506 @@
+{
+  "meta": {
+    "instrument_id": "commercial_engine_check",
+    "instrument_name": "Chequeo del Motor Comercial",
+    "instrument_name_status": "release_candidate",
+    "version": "1.0.0",
+    "contract_status": "final",
+    "methodology_version": "1.0",
+    "sources_of_truth": [
+      "CKA_Diagnostico_Diseno_Conceptual_v1.0_FINAL",
+      "CKA_Product_Language_v1.0",
+      "CKA_Biblioteca_de_Fricciones_v1.0",
+      "CKA_Arquitectura_Emocional_v1.0",
+      "Sprint_03_Plan_v1.0_FINAL"
+    ],
+    "language": "es-CL",
+    "estimated_minutes": 3,
+    "total_interactions": 10,
+    "public_promise": {
+      "core": "Una lectura priorizada de tu motor comercial — dónde mirar primero, qué posponer y con qué nivel de confianza — en menos de tres minutos, con la primera lectura gratis antes de pedir ningún dato.",
+      "typical_form": "Una hipótesis de restricción nombrada, su primer paso concreto y el dato que la confirmaría."
+    },
+    "limitations": [
+      "No es un diagnóstico definitivo: es una lectura sobre lo que declaras, con la consistencia de tus respuestas, no una medición objetiva de tu realidad.",
+      "No promete resultados de venta.",
+      "No entrega benchmarks ni comparación con otras empresas.",
+      "No evalúa personas ni capacidades del equipo.",
+      "No mide producto, pricing estratégico ni retención.",
+      "No entrega puntajes, notas ni niveles numéricos.",
+      "No reemplaza al Diagnóstico Express: lo antecede — este chequeo lee lo declarado; el Express valida con evidencia.",
+      "No está diseñado para concluir siempre algo que su autor venda: existe el desenlace que recomienda no contratar."
+    ],
+    "consent_purpose": "Usaré estos datos para responderte y, de forma anónima y agregada, para mejorar este chequeo."
+  },
+  "rules": {
+    "dimensions": [
+      { "id": "d1_flujo", "code": "D1", "name_internal": "Flujo", "name_public": "Flujo", "sensor_ids": ["s1_origen", "s2_ritmo"], "meta_dimension": false },
+      { "id": "d2_conversion", "code": "D2", "name_internal": "Conversión", "name_public": "Conversión", "sensor_ids": ["s3_destino", "s4_siguiente_paso"], "meta_dimension": false },
+      { "id": "d3_consistencia", "code": "D3", "name_internal": "Consistencia", "name_public": "Consistencia", "sensor_ids": ["s5_dependencia", "s6_incorporacion"], "meta_dimension": false },
+      { "id": "d4_visibilidad", "code": "D4", "name_internal": "Visibilidad", "name_public": "Visibilidad", "sensor_ids": ["s7_confianza_dato", "s8_base_decision"], "meta_dimension": true }
+    ],
+    "classifications": {
+      "friction": { "weight": 2, "description": "Señal fuerte del patrón de fricción de la dimensión." },
+      "weak_friction": { "weight": 1, "description": "Señal débil o ambigua del patrón; suma evidencia sin bastar por sí sola." },
+      "no_friction": { "weight": 0, "description": "Conducta sana respecto del patrón; baja la lectura de fricción." },
+      "unknown": { "weight": 0, "description": "Respuesta 'No lo sé': no puntúa la dimensión propia; alimenta D4 y reduce la confianza declarada.", "feeds_dimension": "d4_visibilidad", "feed_weight": 1, "confidence_effect": "increment_unknown_count" },
+      "context_only": { "weight": 0, "description": "No puntúa: enruta e interpreta (regla R5)." }
+    },
+    "scoring": {
+      "method": "sum_of_option_weights_per_dimension",
+      "direct_dimension_score": {
+        "definition": "Suma de los pesos de los dos sensores directos de la dimensión.",
+        "range": [0, 4]
+      },
+      "indirect_unknown_score": {
+        "applies_to": "d4_visibilidad",
+        "definition": "Suma de feed_weight por cada respuesta 'unknown' del chequeo. Evidencia indirecta: no se confunde con los dos sensores directos de D4.",
+        "range": [0, 8]
+      },
+      "total_interpretation_score": {
+        "definition": "direct_dimension_score + indirect_unknown_score (solo D4 recibe componente indirecta). Es el puntaje que consume la resolución de desenlaces.",
+        "used_by": "resolution"
+      },
+      "never_display_numeric_to_user": true
+    },
+    "id_policy": {
+      "uniqueness": "per_namespace",
+      "namespaces": ["dimensions", "questions", "options", "patterns", "reactive_moments", "outcomes", "resolution_steps", "modifiers"],
+      "note": "Un mismo id puede existir en namespaces distintos (p. ej. 'co_dominancia' como outcome y como paso de resolución)."
+    },
+    "confidence": {
+      "counted_over": "measured_questions_only",
+      "thresholds": [
+        { "level": "alta", "min_unknown": 0, "max_unknown": 0 },
+        { "level": "media", "min_unknown": 1, "max_unknown": 2 },
+        { "level": "baja", "min_unknown": 3, "max_unknown": 8 }
+      ],
+      "modifiers": [
+        {
+          "id": "respondent_outside_sales",
+          "when": { "question_id": "c2_relacion_venta", "option_id": "c2_rol_otro" },
+          "effect": "cap_confidence_at_media",
+          "note_ref": "content.confidence.modifier_notes.respondent_outside_sales"
+        }
+      ]
+    },
+    "resolution": {
+      "priority_order": ["d4_visibilidad", "d3_consistencia", "d2_conversion", "d1_flujo"],
+      "max_fronts": 2,
+      "steps": [
+        {
+          "order": 1,
+          "id": "sin_restriccion",
+          "condition": "all_dimension_scores_lte",
+          "value": 2,
+          "outcome": "sin_restriccion_clara"
+        },
+        {
+          "order": 2,
+          "id": "dominante_unica",
+          "condition": "unique_max_score_gte",
+          "value": 3,
+          "outcome": "dominante"
+        },
+        {
+          "order": 3,
+          "id": "empate_incluye_visibilidad",
+          "condition": "tied_max_gte_includes_dimension",
+          "value": 3,
+          "dimension": "d4_visibilidad",
+          "outcome": "dominante",
+          "resolve_to": "d4_visibilidad",
+          "rationale": "Sin visibilidad no se confirma ninguna otra fricción; el orden de prioridad congelado antepone D4 de forma absoluta."
+        },
+        {
+          "order": 4,
+          "id": "co_dominancia",
+          "condition": "tied_max_gte",
+          "value": 3,
+          "outcome": "co_dominancia",
+          "fronts_rule": "tied_dimensions_ordered_by_priority_order_max_2"
+        }
+      ]
+    },
+    "reactive": {
+      "max_total": 3,
+      "max_per_type": 1,
+      "honesty_rule": "Nunca reaccionar sin trigger cumplido; jamás una reacción después de cada pregunta; las reacciones no simulan chat.",
+      "triggers": [
+        { "moment_id": "r_post_context", "type": "post_context", "when": "after_question_answered", "question_id": "c2_relacion_venta" },
+        { "moment_id": "r_post_unknown", "type": "post_unknown", "when": "first_option_with_classification", "classification": "unknown" },
+        { "moment_id": "r_mid_pattern", "type": "mid_pattern", "when": "after_question_if_any_dimension_score_gte", "question_id": "s4_siguiente_paso", "value": 3 }
+      ]
+    },
+    "partial_full_boundary": {
+      "partial_sections": ["pattern", "why_trace", "hypothesis", "micro_help"],
+      "full_adds_sections": ["first_moves", "postpone", "how_to_confirm", "confidence_declared", "limits", "single_next_step"],
+      "rule": "El parcial nunca esconde el diagnóstico; el completo nunca repite sin agregar."
+    },
+    "interpretation_modifiers": [
+      {
+        "id": "d3_stage_small_company",
+        "when": { "question_id": "c1_tamano", "option_id": "c1_lt_10" },
+        "applies_to_dimension": "d3_consistencia",
+        "effect": "prepend_variant",
+        "variant_ref": "content.library.d3_consistencia.context_variants.d3_variant_etapa"
+      },
+      {
+        "id": "outside_icp",
+        "when": { "question_id": "c1_tamano", "option_id": "c1_gt_100" },
+        "applies_to_dimension": "all",
+        "effect": "append_note",
+        "note_ref": "content.notes.outside_icp"
+      }
+    ]
+  },
+  "content": {
+    "intro": {
+      "headline_promise": "Una lectura priorizada de tu motor comercial: dónde mirar primero y qué posponer.",
+      "cost_line": "10 preguntas · menos de 3 minutos",
+      "value_first_line": "La primera lectura es gratis y la ves antes de dejar ningún dato.",
+      "unknown_hint": "Si una pregunta no la puedes responder con seguridad, \"No lo sé\" es una respuesta útil."
+    },
+    "context_questions": [
+      {
+        "id": "c1_tamano",
+        "code": "C1",
+        "text": "¿De qué tamaño es tu empresa?",
+        "options": [
+          { "id": "c1_lt_10", "label": "Menos de 10 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": ["empresa_pequena"] },
+          { "id": "c1_10_30", "label": "10 a 30 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
+          { "id": "c1_31_100", "label": "31 a 100 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
+          { "id": "c1_gt_100", "label": "Más de 100 personas.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": ["fuera_icp"] }
+        ]
+      },
+      {
+        "id": "c2_relacion_venta",
+        "code": "C2",
+        "text": "¿Cuál es tu relación con la venta en la empresa?",
+        "options": [
+          { "id": "c2_fundador_vende", "label": "Fundé la empresa y vendo.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": ["fundador_vendedor"] },
+          { "id": "c2_lidera_comercial", "label": "Lidero el área comercial.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
+          { "id": "c2_equipo_comercial", "label": "Trabajo en el área comercial.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "none", "signals": [] },
+          { "id": "c2_rol_otro", "label": "Tengo otro rol.", "classification": "context_only", "dimension_effect": { "target": null, "via": "none" }, "confidence_effect": "modifier_respondent_outside_sales", "signals": ["respondente_fuera_de_ventas"] }
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "id": "s1_origen",
+        "code": "S1",
+        "dimension": "d1_flujo",
+        "pattern_id": "flujo_recolectado",
+        "text": "Piensa en las últimas 10 conversaciones comerciales nuevas. ¿De dónde vino la mayoría?",
+        "options": [
+          { "id": "s1_referidos_red", "label": "Referidos o contactos de nuestra red.", "classification": "friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["origen_no_repetible"] },
+          { "id": "s1_inbound", "label": "Llegaron por su cuenta.", "classification": "weak_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["inbound_ambiguo"], "rival_signals": ["posible_motor_reputacion"] },
+          { "id": "s1_iniciamos", "label": "Las iniciamos nosotros.", "classification": "no_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["generacion_activa"] },
+          { "id": "s1_mezcla", "label": "Fue una mezcla bastante pareja.", "classification": "no_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["origen_mixto"] },
+          { "id": "s1_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_origen"] }
+        ]
+      },
+      {
+        "id": "s2_ritmo",
+        "code": "S2",
+        "dimension": "d1_flujo",
+        "pattern_id": "flujo_recolectado",
+        "text": "En los últimos tres meses, ¿salir a buscar clientes nuevos fue una actividad de todas las semanas?",
+        "options": [
+          { "id": "s2_todas_semanas", "label": "Sí, todas o casi todas las semanas.", "classification": "no_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["ritmo_constante"] },
+          { "id": "s2_solo_cuando_baja", "label": "Solo cuando empieza a bajar el pipeline.", "classification": "friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["prospeccion_prociclica", "reconocimiento"] },
+          { "id": "s2_casi_no", "label": "Casi no se hizo.", "classification": "weak_friction", "dimension_effect": { "target": "d1_flujo", "via": "classification" }, "confidence_effect": "none", "signals": ["generacion_ausente"], "rival_signals": ["posible_motor_reputacion"] },
+          { "id": "s2_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_ritmo"] }
+        ]
+      },
+      {
+        "id": "s3_destino",
+        "code": "S3",
+        "dimension": "d2_conversion",
+        "pattern_id": "desvanecimiento",
+        "text": "De las últimas 10 conversaciones comerciales que no terminaron en venta, ¿qué pasó con la mayoría?",
+        "options": [
+          { "id": "s3_nos_dijeron_no", "label": "Nos dijeron que no.", "classification": "no_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["noes_explicitos"], "rival_signals": ["posible_fuera_de_alcance_si_consistente"] },
+          { "id": "s3_dejaron_responder", "label": "Dejaron de responder después de una reunión o una propuesta (\"lo estamos viendo\").", "classification": "friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["desvanecimiento", "reconocimiento"] },
+          { "id": "s3_descartamos", "label": "Las descartamos nosotros.", "classification": "no_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["calificacion_activa"] },
+          { "id": "s3_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_destinos"] }
+        ]
+      },
+      {
+        "id": "s4_siguiente_paso",
+        "code": "S4",
+        "dimension": "d2_conversion",
+        "pattern_id": "desvanecimiento",
+        "text": "Cuando termina una conversación comercial importante, ¿queda definido un siguiente paso con fecha?",
+        "options": [
+          { "id": "s4_casi_siempre", "label": "Casi siempre.", "classification": "no_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["avance_instalado"] },
+          { "id": "s4_a_veces", "label": "A veces.", "classification": "weak_friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["avance_intermitente"] },
+          { "id": "s4_casi_nunca", "label": "Casi nunca; normalmente queda en \"sigamos en contacto\".", "classification": "friction", "dimension_effect": { "target": "d2_conversion", "via": "classification" }, "confidence_effect": "none", "signals": ["sin_siguiente_paso", "reconocimiento"] },
+          { "id": "s4_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_proceso"] }
+        ]
+      },
+      {
+        "id": "s5_dependencia",
+        "code": "S5",
+        "dimension": "d3_consistencia",
+        "pattern_id": "sistema_de_una_persona",
+        "text": "Si la persona que más vende en la empresa dejara de vender durante un mes, ¿qué pasaría?",
+        "options": [
+          { "id": "s5_proceso_seguiria", "label": "El proceso seguiría funcionando.", "classification": "no_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["proceso_independiente"] },
+          { "id": "s5_bajarian_seguiria", "label": "Las ventas bajarían, pero el proceso seguiría funcionando.", "classification": "weak_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["dependencia_parcial"] },
+          { "id": "s5_se_detendria", "label": "La mayor parte de las ventas se detendría.", "classification": "friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["dependencia_total"] },
+          { "id": "s5_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_dependencia"] }
+        ]
+      },
+      {
+        "id": "s6_incorporacion",
+        "code": "S6",
+        "dimension": "d3_consistencia",
+        "pattern_id": "sistema_de_una_persona",
+        "text": "Si mañana se incorporara una persona nueva al equipo comercial, ¿de qué dependería principalmente que empezara a vender?",
+        "options": [
+          { "id": "s6_proceso_claro", "label": "Existe un proceso claro que puede seguir.", "classification": "no_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["camino_externalizado"] },
+          { "id": "s6_depende_acompanante", "label": "Depende mucho de quién la acompañe durante las primeras semanas.", "classification": "weak_friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["conocimiento_tacito"] },
+          { "id": "s6_cada_uno_forma", "label": "Cada persona encuentra su propia forma de vender.", "classification": "friction", "dimension_effect": { "target": "d3_consistencia", "via": "classification" }, "confidence_effect": "none", "signals": ["venta_artesanal"] },
+          { "id": "s6_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_camino"] }
+        ]
+      },
+      {
+        "id": "s7_confianza_dato",
+        "code": "S7",
+        "dimension": "d4_visibilidad",
+        "pattern_id": "gobernar_sin_tablero",
+        "text": "Si hoy alguien te preguntara cuántas oportunidades comerciales activas tiene la empresa, ¿qué tan confiado te sentirías con tu respuesta?",
+        "options": [
+          { "id": "s7_precision", "label": "Lo sabemos con bastante precisión.", "classification": "no_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["observabilidad_alta"] },
+          { "id": "s7_registrado_no_confiable", "label": "Está registrado, pero no confiaríamos demasiado en el dato.", "classification": "friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["registro_decorativo", "reconocimiento"] },
+          { "id": "s7_revisar_antes", "label": "Tendríamos que revisar varias fuentes o preguntarle a alguien antes de responder.", "classification": "weak_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["sin_gobierno_semanal"] },
+          { "id": "s7_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_pipeline"] }
+        ]
+      },
+      {
+        "id": "s8_base_decision",
+        "code": "S8",
+        "dimension": "d4_visibilidad",
+        "pattern_id": "gobernar_sin_tablero",
+        "text": "Piensa en la última decisión importante que tomaron para mejorar las ventas. ¿En qué se basó principalmente?",
+        "options": [
+          { "id": "s8_informacion_disponible", "label": "En información que ya teníamos disponible.", "classification": "no_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["decision_con_datos"] },
+          { "id": "s8_conversaciones_experiencia", "label": "En conversaciones y experiencia del equipo.", "classification": "weak_friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["decision_por_experiencia"] },
+          { "id": "s8_intuicion_urgencia", "label": "Principalmente en intuición o urgencia.", "classification": "friction", "dimension_effect": { "target": "d4_visibilidad", "via": "classification" }, "confidence_effect": "none", "signals": ["sensacion_termica"] },
+          { "id": "s8_ns", "label": "No lo sé.", "classification": "unknown", "dimension_effect": { "target": "d4_visibilidad", "via": "unknown_feed" }, "confidence_effect": "increment_unknown_count", "signals": ["sin_visibilidad_gobierno"] }
+        ]
+      }
+    ],
+    "reactive_moments": [
+      {
+        "id": "r_post_context",
+        "type": "post_context",
+        "text": "Listo — con eso ya puedo situar las lecturas en tu realidad, no en una empresa genérica. Vienen 8 preguntas sobre cómo funciona la venta en la práctica. Si alguna no la puedes responder con seguridad, \"No lo sé\" es una respuesta útil, no una falla."
+      },
+      {
+        "id": "r_post_unknown",
+        "type": "post_unknown",
+        "text": "Ese \"no lo sé\" vale más de lo que parece: le pasa a la mayoría de las empresas de este tamaño, y ya nos está diciendo algo sobre qué tan visible es tu motor comercial. Sigamos."
+      },
+      {
+        "id": "r_mid_pattern",
+        "type": "mid_pattern",
+        "text": "Vamos a la mitad y ya se empieza a dibujar un patrón — uno bastante frecuente, por cierto; no es una rareza tuya. Las próximas preguntas lo van a confirmar o descartar."
+      }
+    ],
+    "library": {
+      "d1_flujo": {
+        "pattern_id": "flujo_recolectado",
+        "pattern_name": "El flujo recolectado",
+        "partial": {
+          "reading": "Tu motor no está generando conversaciones nuevas: las está recolectando cuando aparecen. Es uno de los patrones más comunes en empresas B2B de este tamaño — y suele venir con un pipeline en dientes de sierra: meses buenos que financian la tranquilidad de los meses secos.",
+          "hypothesis": "La hipótesis más probable: no falta esfuerzo — falta un mecanismo constante de generación, con un perfil definido y un dueño. Hoy las conversaciones nuevas son un subproducto, no una función del sistema.",
+          "micro_help": "Algo que puedes hacer hoy, en una hora: reconstruye el origen de tus últimas 10 conversaciones comerciales — de dónde vino cada una, quién la inició y si calzaba con el cliente que quieres. Ese mapa vale más que cualquier consejo genérico."
+        },
+        "full": {
+          "first_moves": [
+            "Define por escrito el perfil de cliente con el que sí quieres conversar. Una página basta.",
+            "Instala una cadencia mínima y constante: un bloque semanal, corto pero innegociable, de generación contra ese perfil.",
+            "Registra semana a semana cuántas conversaciones nuevas con perfil entraron — sin herramienta nueva: una planilla sirve."
+          ],
+          "postpone": [
+            "Contratar un SDR o una agencia de prospección: institucionaliza la ráfaga sin resolver el perfil.",
+            "Comprar herramientas de secuencias o automatización de outbound.",
+            "Invertir en pauta para \"generar demanda\": volumen sobre un perfil indefinido escala el ruido, no el flujo."
+          ],
+          "how_to_confirm": "Sostén la cadencia durante un ciclo corto de ventas. Si el flujo responde a la constancia, la hipótesis se confirma. Si con mecanismo activo la gran mayoría sigue viniendo de fuentes que no puedes repetir a voluntad, la evidencia apunta al perfil o a la propuesta de valor — y eso está fuera de lo que este chequeo puede leer.",
+          "limits": "Este chequeo lee lo que declaraste sobre el origen y el ritmo; no puede ver la calidad real de tus conversaciones ni evaluar tu propuesta de valor."
+        },
+        "rival_hypothesis": "Si las conversaciones sí entran pero se enfrían después, el freno principal puede estar en la conversión, no en el flujo.",
+        "methodological_notes": [],
+        "context_variants": {}
+      },
+      "d2_conversion": {
+        "pattern_id": "desvanecimiento",
+        "pattern_name": "El desvanecimiento",
+        "partial": {
+          "reading": "Tus oportunidades no están muriendo: se están desvaneciendo. El silencio después de la propuesta, el \"lo estamos viendo\" que nunca se resuelve — es un patrón estructural y muy frecuente, y casi nunca es un problema de producto: es un problema de mecanismos de avance.",
+          "hypothesis": "La hipótesis más probable: el proceso no tiene mecanismos de avance — calificación real antes de invertir en una propuesta, y un siguiente paso con fecha en cada conversación. La venta está pidiendo permiso en vez de dirigir el proceso.",
+          "micro_help": "Hoy mismo, en una tarde: haz la autopsia de tus últimas 10 oportunidades sin resolver. Para cada una: ¿hubo siguiente paso con fecha?, ¿sabías quién decidía?, ¿la propuesta se envió antes o después de acordar el problema? El patrón salta solo."
+        },
+        "full": {
+          "first_moves": [
+            "Instala una sola regla: ninguna conversación comercial importante termina sin un siguiente paso con fecha.",
+            "No envíes propuesta sin problema y decisor establecidos — la propuesta resume lo acordado, no abre la exploración.",
+            "Cierra los zombis: toda oportunidad vieja se resuelve, a sí o a no. Un \"no\" temprano es salud, no fracaso."
+          ],
+          "postpone": [
+            "Bajar precios o dar descuentos para \"destrabar\": el descuento no destraba lo que nunca calificó — le pone precio al silencio.",
+            "Rehacer el sitio o el material de venta.",
+            "Meter más oportunidades arriba para compensar: escalar el flujo sobre un proceso que no convierte multiplica el costo, no el cierre."
+          ],
+          "how_to_confirm": "Aplica la regla del siguiente paso en tus próximas oportunidades y observa el desenlace: si empiezan a resolverse — a sí o a no — en vez de apagarse, la hipótesis se confirma. Si los noes llegan rápido y apuntan consistentemente a precio o producto, la evidencia sale del alcance de este chequeo.",
+          "limits": "Lee destinos y conductas declaradas; no puede evaluar tu propuesta de valor, tu precio ni tu competencia."
+        },
+        "rival_hypothesis": "Si además entran pocas conversaciones nuevas, la escasez hace que cada oportunidad se sobreproteja — en ese caso, mira primero el flujo.",
+        "methodological_notes": [
+          "Un \"no\" temprano puede ser una señal de salud del proceso cuando existe calificación real."
+        ],
+        "context_variants": {}
+      },
+      "d3_consistencia": {
+        "pattern_id": "sistema_de_una_persona",
+        "pattern_name": "El sistema de una persona",
+        "partial": {
+          "reading": "La venta funciona — mientras la haga una persona. Es de los patrones más comunes del B2B de este tamaño, y no es una falla de nadie: es la consecuencia natural de que el conocimiento comercial nunca se haya externalizado a un camino que otros puedan seguir.",
+          "hypothesis": "La hipótesis más probable: no existe — o no está escrito y en uso — el camino repetible: etapas, criterios de avance y materiales base. La dependencia no es un rasgo de las personas: es la ausencia de sistema.",
+          "micro_help": "Hoy, en una hora: pídele a quien más vende que escriba en una página el camino de una venta típica — etapas, qué pasa en cada una, qué define avanzar. Si la página no se puede escribir, el resultado ya está a la vista."
+        },
+        "full": {
+          "first_moves": [
+            "Convierte esa página en el camino oficial: pocas etapas, criterios claros de avance.",
+            "Arma los materiales base: una propuesta tipo y las respuestas a las cinco objeciones más frecuentes.",
+            "Haz que la próxima venta siga el camino, registrando los desvíos — son información, no fracaso."
+          ],
+          "postpone": [
+            "Contratar al vendedor \"senior que se autogestiona\": sin un sistema al cual incorporarse, lo estás contratando para fracasar con sueldo alto.",
+            "Comprar un CRM \"para ordenar\": el CRM registra un proceso, no lo crea.",
+            "Escribir el manual de cuarenta páginas: el artefacto que se usa es una página."
+          ],
+          "how_to_confirm": "Haz que las próximas ventas sigan el camino de una página, anotando los desvíos. Si se puede seguir y los desvíos se explican, la hipótesis se confirma y transferir la venta se vuelve práctica, no misterio. Si cada venta real rompe el camino desde el primer contacto, puede tratarse de venta genuinamente experta — un límite que este chequeo declara.",
+          "limits": "No evalúa el talento de nadie; describe si el sistema está externalizado o vive en una cabeza."
+        },
+        "rival_hypothesis": "No confundas \"no hay camino\" con \"no vemos el camino\": si lo que no se puede responder es cuánto hay y dónde está, mira primero la visibilidad.",
+        "methodological_notes": [
+          "En una empresa muy pequeña, que venda quien fundó puede ser una etapa normal; la fricción es que no exista un camino externalizable."
+        ],
+        "context_variants": {
+          "d3_variant_etapa": {
+            "id": "d3_variant_etapa",
+            "lead_in": "Con el tamaño actual de tu empresa, que venda quien fundó no es la fricción: es la etapa. El punto no es que dejes de vender tú — es que el camino empiece a existir fuera de tu cabeza, para que el techo no llegue junto con el crecimiento."
+          }
+        }
+      },
+      "d4_visibilidad": {
+        "pattern_id": "gobernar_sin_tablero",
+        "pattern_name": "Gobernar sin tablero",
+        "partial": {
+          "reading": "Tu motor está andando sin tablero: el estado real del negocio vive en memorias y estimaciones que no siempre coinciden. Le pasa a la mayoría de las empresas de este tamaño — y tiene un efecto silencioso: ninguna otra fricción se puede confirmar ni descartar sin poder mirar los hechos.",
+          "hypothesis": "La hipótesis más probable: el registro está diseñado para reportar, no para operar — exige más de lo que devuelve, y abandonarlo es racional. No es falta de disciplina: es un problema de diseño.",
+          "micro_help": "Hoy, en media hora: el test de las tres preguntas. Sin abrir nada, escribe de memoria cuántas oportunidades activas hay, cuántas conversaciones nuevas entraron el mes pasado y cuántas propuestas siguen vivas. Después compara contra lo que tengan registrado. Esa brecha es tu punto de partida."
+        },
+        "full": {
+          "first_moves": [
+            "Define el mínimo observable: las 3 a 5 cosas que mirarán cada semana (conversaciones nuevas, oportunidades por etapa, propuestas vivas, próximos pasos vencidos).",
+            "Asigna un momento semanal fijo — corto — para mirarlas en equipo.",
+            "Usa lo que ya tienen: una planilla sana vale más que un software decorativo."
+          ],
+          "postpone": [
+            "Migrar o comprar un CRM: cambiar de herramienta traslada el problema, con costo de mudanza.",
+            "Contratar un analista o armar tableros sobre datos que nadie registra: institucionaliza la ficción.",
+            "Decretar que \"ahora todos llenan el CRM\": el cumplimiento forzado produce datos de cumplimiento, no de operación."
+          ],
+          "how_to_confirm": "Sostén el mínimo observable durante un ciclo corto. Si al existir un registro barato el equipo lo usa y las conversaciones empiezan a referirse a él, la hipótesis se confirma: era diseño, no disciplina. Si es barato y aun así nadie lo mira para decidir, la fricción vive en el gobierno del negocio — y eso este chequeo lo declara, no lo resuelve.",
+          "limits": "Mide la observabilidad del sistema, no el uso de una herramienta específica: una planilla sana vale igual que un CRM sano."
+        },
+        "rival_hypothesis": "Distinto de no tener camino: aquí la pregunta sin respuesta es \"cuánto hay y dónde está\", no \"cómo vendemos\".",
+        "methodological_notes": [
+          "D4 es meta-dimensión: los \"no lo sé\" del resto del chequeo alimentan esta lectura y reducen la confianza declarada."
+        ],
+        "context_variants": {}
+      }
+    },
+    "outcomes": {
+      "dominante": {
+        "id": "dominante",
+        "intro_template": "Con lo que declaraste, el freno principal de tu motor comercial está en: {dimension_public_name} — {pattern_name}.",
+        "body_source": "library"
+      },
+      "co_dominancia": {
+        "id": "co_dominancia",
+        "intro_template": "Con lo que declaraste, tu motor muestra dos frentes con fuerza similar: {front_1_pattern_name} y {front_2_pattern_name}.",
+        "guidance": "No hay que atacar los dos a la vez. Parte por el más barato de confirmar con datos — por eso van en este orden — y deja el segundo frente identificado, no olvidado.",
+        "fronts_body_source": "library_partial_plus_first_move_and_first_postpone"
+      },
+      "sin_restriccion_clara": {
+        "id": "sin_restriccion_clara",
+        "title": "Sin una restricción dominante clara — y eso también es una lectura.",
+        "reading": "Con lo que declaraste, no aparece un freno dominante. Puede significar dos cosas: que tu motor está razonablemente sano en lo que este chequeo mide — flujo, conversión, consistencia y visibilidad — o que el freno vive fuera de su alcance: producto, precio o mercado.",
+        "what_to_watch": "Qué mirar: sostén durante dos semanas un mínimo observable — conversaciones nuevas, oportunidades por etapa, propuestas vivas. Si algo se está frenando, ahí va a asomar.",
+        "postpone": "Qué posponer: cualquier compra grande de herramientas o contratación comercial hasta tener esa lectura con datos.",
+        "honest_note": "Y la parte honesta: si el freno resulta estar en producto o precio, la recomendación correcta no es contratar una intervención comercial — es resolver eso primero.",
+        "next_step_ref": "cta"
+      }
+    },
+    "confidence": {
+      "alta": "Confianza de esta lectura: alta. Respondiste con seguridad las preguntas del chequeo, así que la lectura se apoya en señales completas.",
+      "media": "Confianza de esta lectura: media. Una o dos preguntas quedaron en \"no lo sé\", y la lectura lo respeta: donde no hay señal, no se concluye.",
+      "baja": "Confianza de esta lectura: baja. Varias preguntas quedaron en \"no lo sé\" — y eso ya es un hallazgo en sí mismo: apunta a la visibilidad de tu motor. Toma esta lectura como orientación inicial, no como conclusión.",
+      "modifier_notes": {
+        "respondent_outside_sales": "Nota: como tu rol está fuera del área comercial, esta lectura se toma con un grado extra de cautela — algunas señales pueden verse distintas desde adentro de la venta."
+      }
+    },
+    "templates": {
+      "partial_result": {
+        "section_order": ["pattern", "why_trace", "hypothesis", "micro_help"],
+        "trace_line": "Esta lectura aparece por tus respuestas: {evidence_answer_labels}.",
+        "rule": "El diagnóstico nunca se esconde; la micro-ayuda se entrega antes de pedir nada."
+      },
+      "full_report": {
+        "section_order": ["lectura_priorizada", "por_que", "primer_paso", "siguientes_jugadas", "que_posponer", "como_confirmar", "confianza_declarada", "limites", "siguiente_paso_unico"],
+        "rule": "Esqueleto invariante para los tres desenlaces; solo varía la rama de biblioteca que lo llena."
+      },
+      "gate": {
+        "ask_fields": ["name", "email"],
+        "freedom_text": "Lo que ya leíste es tuyo, con o sin correo. Si quieres el informe completo — la secuencia de pasos, qué posponer y cómo confirmar cada hipótesis — déjame tu nombre y correo y lo ves al tiro, acá mismo.",
+        "consent_ref": "meta.consent_purpose",
+        "minimum_ask_rule": "Solo nombre y correo; ningún campo adicional en el momento del intercambio."
+      }
+    },
+    "cta": {
+      "id": "cta_diagnostico_express",
+      "label": "Agenda un Diagnóstico Express",
+      "framing": "Este chequeo lee lo que declaraste. El Diagnóstico Express lo valida con evidencia, sobre tus datos reales — es el siguiente paso natural si quieres confirmar esta lectura.",
+      "target": "mailto:vasquezfariasclaudio@gmail.com?subject=Diagnostico%20Express"
+    },
+    "notes": {
+      "outside_icp": "Este chequeo está calibrado para empresas B2B de 5 a 100 personas. Sobre ese tamaño, toma la lectura como una primera aproximación."
+    }
+  },
+  "persistence": {
+    "target": "lead.metadata.diagnostic",
+    "lead_contract_unchanged": true,
+    "lead_source_value": "diagnostic",
+    "payload_schema": {
+      "version": "meta.version",
+      "context_answers": { "c1_tamano": "option_id", "c2_relacion_venta": "option_id" },
+      "measured_answers": { "s1_origen": "option_id", "s2_ritmo": "option_id", "s3_destino": "option_id", "s4_siguiente_paso": "option_id", "s5_dependencia": "option_id", "s6_incorporacion": "option_id", "s7_confianza_dato": "option_id", "s8_base_decision": "option_id" },
+      "outcome": "outcome_id",
+      "dominant_dimension": "dimension_id_or_null",
+      "dominant_dimensions": "array_of_dimension_ids_when_co_dominance",
+      "confidence": "alta|media|baja",
+      "unknown_count": "integer_0_to_8"
+    },
+    "rules": [
+      "Las respuestas se persisten mediante IDs de opción, nunca mediante labels visibles.",
+      "No se persiste nada si la persona abandona antes del gate.",
+      "El contrato de lead congelado en Sprint 02 no se modifica."
+    ]
+  }
+}
