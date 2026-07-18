@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DiagnosticoRouteImport } from './routes/diagnostico'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicOpsLeadCallbackRouteImport } from './routes/api/public/ops/lead-callback'
 
 const DiagnosticoRoute = DiagnosticoRouteImport.update({
   id: '/diagnostico',
@@ -22,31 +23,41 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOpsLeadCallbackRoute =
+  ApiPublicOpsLeadCallbackRouteImport.update({
+    id: '/api/public/ops/lead-callback',
+    path: '/api/public/ops/lead-callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/diagnostico': typeof DiagnosticoRoute
+  '/api/public/ops/lead-callback': typeof ApiPublicOpsLeadCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/diagnostico': typeof DiagnosticoRoute
+  '/api/public/ops/lead-callback': typeof ApiPublicOpsLeadCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/diagnostico': typeof DiagnosticoRoute
+  '/api/public/ops/lead-callback': typeof ApiPublicOpsLeadCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/diagnostico'
+  fullPaths: '/' | '/diagnostico' | '/api/public/ops/lead-callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/diagnostico'
-  id: '__root__' | '/' | '/diagnostico'
+  to: '/' | '/diagnostico' | '/api/public/ops/lead-callback'
+  id: '__root__' | '/' | '/diagnostico' | '/api/public/ops/lead-callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DiagnosticoRoute: typeof DiagnosticoRoute
+  ApiPublicOpsLeadCallbackRoute: typeof ApiPublicOpsLeadCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,13 +76,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ops/lead-callback': {
+      id: '/api/public/ops/lead-callback'
+      path: '/api/public/ops/lead-callback'
+      fullPath: '/api/public/ops/lead-callback'
+      preLoaderRoute: typeof ApiPublicOpsLeadCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DiagnosticoRoute: DiagnosticoRoute,
+  ApiPublicOpsLeadCallbackRoute: ApiPublicOpsLeadCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
