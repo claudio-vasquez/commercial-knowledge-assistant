@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { Json } from "@/integrations/supabase/types";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -118,7 +119,7 @@ export const Route = createFileRoute("/api/public/ops/lead-callback")({
           // Atomic guard: only update if metadata->ops is still null
           const { data: updated, error: updErr } = await supabaseAdmin
             .from("leads")
-            .update({ metadata: nextMeta })
+            .update({ metadata: nextMeta as unknown as Json })
             .eq("id", lead_id)
             .is("metadata->ops", null)
             .select("id")
@@ -137,7 +138,7 @@ export const Route = createFileRoute("/api/public/ops/lead-callback")({
           const nextMeta = { ...metadata, ops: nextOps };
           const { error: updErr } = await supabaseAdmin
             .from("leads")
-            .update({ metadata: nextMeta })
+            .update({ metadata: nextMeta as unknown as Json })
             .eq("id", lead_id);
           if (updErr) {
             console.error("[lead-callback] complete error", updErr.message);
@@ -160,7 +161,7 @@ export const Route = createFileRoute("/api/public/ops/lead-callback")({
         const nextMeta = { ...metadata, ops: nextOps };
         const { error: updErr } = await supabaseAdmin
           .from("leads")
-          .update({ metadata: nextMeta })
+          .update({ metadata: nextMeta as unknown as Json })
           .eq("id", lead_id);
         if (updErr) {
           console.error("[lead-callback] error action failed", updErr.message);
